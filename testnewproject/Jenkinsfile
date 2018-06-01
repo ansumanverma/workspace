@@ -5,7 +5,7 @@ node {
     	stage('checkout'){
         
         mvnHome = tool 'M3'
-        git url: 'https://github.com/ansumanverma/workspace.git'
+        git url: 'https://github.com/ansumanverma/workplace.git'
     
         sh "git rev-parse HEAD > .git/commit-id"
         def commit_id = readFile('.git/commit-id').trim()
@@ -13,7 +13,19 @@ node {
         }
     
     dir('testnewproject'){
-      
+        stage('build'){
+	        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean install"
+    	}
+    	
+    	stage('create docker image'){
+		        sh 'docker login --username anshumanverma --password shona@123'
+		        sh ("docker build -t testnewproject .")
+		        sh ("docker tag  testnewproject anshumanverma/test:testnewproject")
+    	}
+    	
+    	stage('push docker image'){
+			sh ("docker push anshumanverma/test:testnewproject")
+    	}
     	
     	stage('create deployment'){
     	    sh 'kubectl delete deployments testnewprojectapi || true' 
