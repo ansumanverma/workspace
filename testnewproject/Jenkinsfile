@@ -23,9 +23,7 @@ node {
 		        sh ("docker tag  testnewproject anshumanverma/test:testnewproject")
     	}
     	
-    	stage('push docker image'){
-			sh ("docker push anshumanverma/test:testnewproject")
-    	}
+    	
     	
     	stage('create deployment'){
     	    sh 'kubectl delete deployments testnewprojectapi || true' 
